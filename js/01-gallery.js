@@ -1,8 +1,5 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
-
-console.log(galleryItems);
-
 const gallery = document.querySelector(".gallery");
 
 const markup = galleryItems
@@ -22,7 +19,27 @@ const markup = galleryItems
 
 gallery.insertAdjacentHTML("afterbegin", markup);
 
-gallery.addEventListener("click", (event) => {
+gallery.addEventListener("click", onClickOpenModal);
+
+function onClickOpenModal(event) {
   event.preventDefault();
-  console.log(event.target.dataset.source);
-});
+  if (event.target.nodeName === "IMG") {
+    const image = event.target.dataset.source;
+    const modal = basicLightbox.create(
+      `
+    	<img width="1400" height="900" src="${image}">
+    `,
+      {
+        onShow: () => document.addEventListener("keydown", onEscCloseModal),
+        onClose: () => document.removeEventListener("keydown", onEscCloseModal),
+      }
+    );
+    modal.show();
+
+    function onEscCloseModal(e) {
+      if (e.key === "Escape") {
+        modal.close();
+      }
+    }
+  }
+}
